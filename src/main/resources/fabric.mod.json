@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "buildermod",
+  "version": "${version}",
+
+  "name": "Builder Mod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Moulberry"
+  ],
+  "contact": {
+    "discord": "Moulberry#0001"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/buildermod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "codes.moulberry.BuilderMod"
+    ]
+  },
+  "mixins": [
+    "buildermod.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

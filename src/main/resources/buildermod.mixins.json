@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "codes.moulberry.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinClientPlayerEntity",
+    "MixinClientPlayerInteractionManager",
+    "MixinClientPlayNetworkHandler",
+    "MixinHeldItemRenderer",
+    "MixinMinecraftClient",
+    "MixinPlayerInventory"
+  ],
+  "client": [
+    "MixinInGameHud"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
