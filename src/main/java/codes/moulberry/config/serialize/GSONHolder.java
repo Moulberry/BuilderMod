@@ -7,7 +7,9 @@ import net.minecraft.item.Item;
 public class GSONHolder {
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
-            .registerTypeAdapter(Item.class, new ItemSerializer())
+            //.registerTypeAdapter(Item.class, new ItemSerializer())
             .create();
+
+
 
 }

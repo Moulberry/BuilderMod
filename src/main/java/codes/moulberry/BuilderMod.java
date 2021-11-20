@@ -4,15 +4,15 @@ import codes.moulberry.commands.ClientCommandManager;
 import codes.moulberry.commands.ToolMenuCommand;
 import codes.moulberry.config.BMConfig;
 import codes.moulberry.config.serialize.GSONHolder;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.network.ClientCommandSource;
+import net.minecraft.client.Keyboard;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.server.command.ServerCommandSource;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,9 +29,13 @@ public class BuilderMod implements ModInitializer {
 	public BMConfig config = null;
 	private File configFile;
 
+	public KeyBinding clearLaserKeybind = new KeyBinding("buildermod.clearlaser", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_DELETE, "BuilderMod");
+
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
+
+		ClientPlayConnectionEvents.JOIN.register(WorldEditCUI.getInstance()::onPlayReady);
 
 		configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), "buildermod/config.json");
 		configFile.getParentFile().mkdirs();

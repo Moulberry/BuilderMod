@@ -38,8 +38,8 @@ public class GuiToolMenu extends Screen {
         super(Text.of("Tool Menu"));
         this.playerInventory = playerInventory;
 
-        for(Item item : BuilderMod.getInstance().config.quickTools) {
-            toolStacks.add(new ItemStack(item));
+        for(int itemI : BuilderMod.getInstance().config.quickTools) {
+            toolStacks.add(new ItemStack(Item.byRawId(itemI)));
         }
     }
 
@@ -48,7 +48,7 @@ public class GuiToolMenu extends Screen {
         BMConfig config = BuilderMod.getInstance().config;
         config.quickTools.clear();
         for(ItemStack stack : toolStacks) {
-            config.quickTools.add(stack.getItem());
+            config.quickTools.add(Item.getRawId(stack.getItem()));
         }
     }
 

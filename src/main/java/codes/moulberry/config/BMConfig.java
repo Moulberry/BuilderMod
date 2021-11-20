@@ -9,6 +9,6 @@ import java.util.List;
 
 public class BMConfig {
 
-    public List<Item> quickTools = Lists.newArrayList(Items.WOODEN_AXE);
+    public List<Integer> quickTools = Lists.newArrayList(Item.getRawId(Items.WOODEN_AXE));
 
 }

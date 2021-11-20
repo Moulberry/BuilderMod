@@ -5,11 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinClientPlayerEntity",
-    "MixinClientPlayerInteractionManager",
     "MixinClientPlayNetworkHandler",
     "MixinHeldItemRenderer",
     "MixinMinecraftClient",
-    "MixinPlayerInventory"
+    "MixinPlayerInventory",
+    "MixinWorldRenderer"
   ],
   "client": [
     "MixinInGameHud"
