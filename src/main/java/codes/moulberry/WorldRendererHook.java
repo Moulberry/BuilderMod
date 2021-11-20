@@ -31,6 +31,8 @@ public class WorldRendererHook {
         return INSTANCE;
     }
 
+    private static final Identifier HIGHLIGHT = new Identifier("buildermod", "highlight.png");
+
     public void onRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline,
                          Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager,
                          Matrix4f matrix4f) {
@@ -52,18 +54,18 @@ public class WorldRendererHook {
                 if(chain.renderPoints != null && chain.renderPoints.size() > 1) {
                     Matrix4f matrix = matrices.peek().getModel();
 
-                    RenderSystem.color4f(1, 0, 0, 1);
+                    RenderSystem.setShaderColor(1, 0, 0, 1);
+                    RenderSystem.setShader(GameRenderer::getPositionShader);
 
-                    GlStateManager.lineWidth(3);
-                    GlStateManager.disableCull();
-                    GlStateManager.disableDepthTest();
-                    GlStateManager.disableTexture();
-                    GlStateManager.disableAlphaTest();
+                    RenderSystem.lineWidth(3);
+                    RenderSystem.disableCull();
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.disableTexture();
                     RenderSystem.defaultBlendFunc();
-                    GlStateManager.enableBlend();
+                    RenderSystem.enableBlend();
 
                     BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-                    bufferBuilder.begin(GL11.GL_LINE_STRIP, VertexFormats.POSITION);
+                    bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
 
                     for(int i=0; i<chain.renderPoints.size(); i++) {
                         Vec3d pos = chain.renderPoints.get(i);
@@ -79,21 +81,21 @@ public class WorldRendererHook {
     }
 
     private void renderPointerSpot(MatrixStack matrices, Vec3d pos, float tickDelta) {
-        MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("buildermod", "highlight.png"));
+        RenderSystem.setShaderTexture(0, HIGHLIGHT);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
         Matrix4f matrix = matrices.peek().getModel();
 
-        GlStateManager.disableCull();
-        GlStateManager.disableDepthTest();
-        GlStateManager.enableTexture();
-        GlStateManager.disableAlphaTest();
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        GlStateManager.enableBlend();
 
-        GlStateManager.color4f(1, 0, 0, 0.05f);
+        RenderSystem.setShaderColor(1, 0, 0, 0.05f);
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         for(int i=0; i<360; i+=30) {
             float s = (float) Math.sin(Math.toRadians(i));
             float c = (float) Math.cos(Math.toRadians(i));
@@ -119,8 +121,6 @@ public class WorldRendererHook {
 
         bufferBuilder.end();
         BufferRenderer.draw(bufferBuilder);
-
-        RenderSystem.enableAlphaTest();
     }
 
     private void renderWorldeditCUI(MatrixStack matrices, float tickDelta) {
@@ -168,10 +168,10 @@ public class WorldRendererHook {
                 pos2.getX()+0.5f, pos2.getY()+0.5f, pos2.getZ()+0.5f).expand(0.5f+expansion);
 
         Matrix4f mat = matrices.peek().getModel();
-        GlStateManager.disableCull();
-        GlStateManager.disableTexture();
-        GlStateManager.enableDepthTest();
-        GlStateManager.enableBlend();
+        RenderSystem.disableCull();
+        RenderSystem.disableTexture();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 
@@ -181,7 +181,7 @@ public class WorldRendererHook {
             int green = (mainColour >> 8) & 0xFF;
             int blue = mainColour & 0xFF;
 
-            bufferBuilder.begin(GL11.GL_TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+            bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
             bufferBuilder.vertex(mat, (float)box.minX, (float)box.maxY, (float)box.maxZ).color(red, green, blue, alpha).next();
             bufferBuilder.vertex(mat, (float)box.maxX, (float)box.maxY, (float)box.maxZ).color(red, green, blue, alpha).next();
             bufferBuilder.vertex(mat, (float)box.minX, (float)box.minY, (float)box.maxZ).color(red, green, blue, alpha).next();
@@ -208,9 +208,9 @@ public class WorldRendererHook {
             int green = (highlightColour2 >> 8) & 0xFF;
             int blue = highlightColour2 & 0xFF;
 
-            GlStateManager.lineWidth(3);
-            GlStateManager.enableDepthTest();
-            bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+            RenderSystem.lineWidth(3);
+            RenderSystem.enableDepthTest();
+            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
             for(double x=box2.minX+1; x<box2.maxX-0.1f; x++) {
                 bufferBuilder.vertex(mat, (float)x, (float)box2.minY, (float)box2.minZ).color(red, green, blue, alpha).next();
                 bufferBuilder.vertex(mat, (float)x, (float)box2.minY, (float)box2.maxZ).color(red, green, blue, alpha).next();
@@ -248,8 +248,8 @@ public class WorldRendererHook {
             BufferRenderer.draw(bufferBuilder);
         }
 
-        GlStateManager.lineWidth(3);
-        GlStateManager.disableDepthTest();
+        RenderSystem.lineWidth(3);
+        RenderSystem.disableDepthTest();
 
         {
             int alpha = (highlightColour >> 24) & 0xFF;
@@ -257,14 +257,14 @@ public class WorldRendererHook {
             int green = (highlightColour >> 8) & 0xFF;
             int blue = highlightColour & 0xFF;
 
-            bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+            bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
             WorldRenderer.drawBox(matrices, bufferBuilder, box, red / 255f, green / 255f, blue / 255f, alpha / 255f);
             bufferBuilder.end();
             BufferRenderer.draw(bufferBuilder);
         }
 
-        GlStateManager.enableDepthTest();
-        GlStateManager.enableCull();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableCull();
     }
 
 }

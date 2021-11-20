@@ -2,6 +2,7 @@ package codes.moulberry.gui;
 
 import codes.moulberry.BuilderMod;
 import codes.moulberry.config.BMConfig;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -133,8 +134,8 @@ public class GuiToolMenu extends Screen {
     }
 
     private void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(TEXTURE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.rows * 18 + 17);
         this.drawTexture(matrices, this.x, this.y + this.rows * 18 + 17, 0, 126, this.backgroundWidth, 96);
     }

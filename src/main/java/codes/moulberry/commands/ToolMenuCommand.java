@@ -18,7 +18,7 @@ public class ToolMenuCommand {
 
     private static int execute() {
         MinecraftClient.getInstance().send(() -> {
-            MinecraftClient.getInstance().openScreen(new GuiToolMenu(MinecraftClient.getInstance().player.inventory));
+            MinecraftClient.getInstance().setScreen(new GuiToolMenu(MinecraftClient.getInstance().player.getInventory()));
         });
         return 0;
     }

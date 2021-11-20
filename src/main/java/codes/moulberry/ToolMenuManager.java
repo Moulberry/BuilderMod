@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
 import net.minecraft.util.Hand;
+import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
 
 public class ToolMenuManager {
@@ -24,7 +25,9 @@ public class ToolMenuManager {
     private ItemStack oldStack = null;
 
     public boolean isOverriding() {
-        boolean override = isOverridingSlot && MinecraftClient.getInstance().player.inventory.selectedSlot == 0 && selectedStack != null;
+        if (MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE) return false;
+
+        boolean override = isOverridingSlot && MinecraftClient.getInstance().player.getInventory().selectedSlot == 0 && selectedStack != null;
         if(!override) {
             isOverridingSlot = false;
         }
@@ -36,18 +39,18 @@ public class ToolMenuManager {
     }
 
     public void changeStack() {
-        if(true) return;
-        if(oldStack == null) oldStack = MinecraftClient.getInstance().player.inventory.main.get(0);
+        if(oldStack == null) oldStack = MinecraftClient.getInstance().player.getInventory().main.get(0);
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, ToolMenuManager.getInstance().getStack()));
     }
 
     public void resetStack() {
-        if(true) return;
         if(oldStack != null) MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, oldStack));
         oldStack = null;
     }
 
     public int onScroll(int direction, int resultantSlot) {
+        if (MinecraftClient.getInstance().interactionManager.getCurrentGameMode() != GameMode.CREATIVE) return resultantSlot;
+
         if(MinecraftClient.getInstance().currentScreen != null) {
             return resultantSlot;
         }

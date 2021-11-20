@@ -9,7 +9,7 @@ import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -118,7 +118,7 @@ public abstract class MixinMinecraftClient {
 
         ItemStack oldStack = null;
         if(override) {
-            oldStack = player.inventory.main.get(0);
+            oldStack = player.getInventory().main.get(0);
             getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, ToolMenuManager.getInstance().getStack()));
         }
         doAttack();
@@ -163,7 +163,7 @@ public abstract class MixinMinecraftClient {
 
         ItemStack oldStack = null;
         if(override) {
-            oldStack = player.inventory.main.get(0);
+            oldStack = player.getInventory().main.get(0);
             getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, ToolMenuManager.getInstance().getStack()));
         }
         if(override && oldStack.isEmpty()) {

@@ -30,14 +30,6 @@ public abstract class MixinWorldRenderer {
 
     @Shadow protected abstract void drawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState);
 
-    @Shadow @Final private VertexFormat vertexFormat;
-
-    /*private RenderLayer BLOCK_RENDER_LAYER = RenderLayer.of("buildermod_render_layer",
-            VertexFormats.vertexITION_COLOR,
-            7, 256, true, false,
-            RenderLayer.MultiPhaseParameters.builder().build(false));*/
-
-
     @Inject(method="render", at=@At(
             value = "RETURN"
     ))

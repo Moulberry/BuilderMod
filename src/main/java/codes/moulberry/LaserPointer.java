@@ -65,7 +65,6 @@ public class LaserPointer {
                 Vec3d first = currentChain.points.get(0);
 
                 double distSq = first.distanceTo(position);
-                System.out.println("Dist:"+distSq);
                 if(distSq < 1) {
                     currentChain.looped = true;
                     currentChain.updateRenderPoints();
