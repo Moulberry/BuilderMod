@@ -1,6 +1,5 @@
 package codes.moulberry;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;

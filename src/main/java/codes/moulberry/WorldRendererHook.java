@@ -1,10 +1,8 @@
 package codes.moulberry;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -17,11 +15,6 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL21;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorldRendererHook {
 
@@ -52,7 +45,7 @@ public class WorldRendererHook {
                 }
 
                 if(chain.renderPoints != null && chain.renderPoints.size() > 1) {
-                    Matrix4f matrix = matrices.peek().getModel();
+                    Matrix4f matrix = matrices.peek().getPositionMatrix();
 
                     RenderSystem.setShaderColor(1, 0, 0, 1);
                     RenderSystem.setShader(GameRenderer::getPositionShader);
@@ -84,7 +77,7 @@ public class WorldRendererHook {
         RenderSystem.setShaderTexture(0, HIGHLIGHT);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        Matrix4f matrix = matrices.peek().getModel();
+        Matrix4f matrix = matrices.peek().getPositionMatrix();
 
         RenderSystem.disableCull();
         RenderSystem.disableDepthTest();
@@ -146,8 +139,7 @@ public class WorldRendererHook {
             if(entity != null) {
                 HitResult result = entity.raycast(100, tickDelta, !entity.isInLava() && !entity.isSubmergedInWater());
 
-                if(result instanceof BlockHitResult) {
-                    BlockHitResult blockHitResult = (BlockHitResult) result;
+                if(result instanceof BlockHitResult blockHitResult) {
 
                     BlockPos pos = blockHitResult.getBlockPos();
                     BlockState state = MinecraftClient.getInstance().world.getBlockState(pos);
@@ -167,7 +159,7 @@ public class WorldRendererHook {
         Box box = new Box(pos1.getX()+0.5f, pos1.getY()+0.5f, pos1.getZ()+0.5f,
                 pos2.getX()+0.5f, pos2.getY()+0.5f, pos2.getZ()+0.5f).expand(0.5f+expansion);
 
-        Matrix4f mat = matrices.peek().getModel();
+        Matrix4f mat = matrices.peek().getPositionMatrix();
         RenderSystem.disableCull();
         RenderSystem.disableTexture();
         RenderSystem.enableDepthTest();

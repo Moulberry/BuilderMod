@@ -2,11 +2,15 @@
   "required": true,
   "minVersion": "0.8",
   "package": "codes.moulberry.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MixinAbstractBlock",
+    "MixinBlockItem",
     "MixinClientPlayerEntity",
     "MixinClientPlayNetworkHandler",
     "MixinHeldItemRenderer",
+    "MixinItemModels",
+    "MixinItemStack",
     "MixinMinecraftClient",
     "MixinPlayerInventory",
     "MixinWorldRenderer"
