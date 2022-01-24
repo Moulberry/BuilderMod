@@ -37,7 +37,10 @@ public class BuilderMod implements ModInitializer {
 		INSTANCE = this;
 
 		ClientPlayConnectionEvents.JOIN.register(WorldEditCUI.getInstance()::onPlayReady);
+		ClientPlayConnectionEvents.JOIN.register(CustomBlocks::sendEnablePacket);
 		StateManager.setupPackets();
+		WorldEditCUI.getInstance().registerReceiver();
+		CustomBlocks.registerPackets();
 
 		configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), "buildermod/config.json");
 		configFile.getParentFile().mkdirs();

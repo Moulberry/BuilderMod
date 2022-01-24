@@ -25,7 +25,7 @@ public class MixinItemStack {
 
     @Inject(method = "getTooltip", at = @At("RETURN"), cancellable = true)
     public void onTooltip(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
-        if (context.isAdvanced() && Screen.hasShiftDown() && this.nbt != null) {
+        if (context.isAdvanced() && Screen.hasControlDown() && this.nbt != null) {
             var returnValue = cir.getReturnValue();
             Arrays.stream(NbtHelper.toNbtProviderString(this.nbt).split("\n"))
                     .map(LiteralText::new).forEachOrdered(returnValue::add);
