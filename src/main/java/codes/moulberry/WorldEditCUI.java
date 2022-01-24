@@ -42,8 +42,11 @@ public class WorldEditCUI {
         String message = "v|4";
         ByteBuf buffer = Unpooled.copiedBuffer(message, StandardCharsets.UTF_8);
         ClientPlayNetworking.send(CHANNEL_WECUI, new PacketByteBuf(buffer));
-        ClientPlayNetworking.registerGlobalReceiver(CHANNEL_WECUI, this::onReceive);
         System.out.println("Registered!");
+    }
+
+    public void registerReceiver() {
+        ClientPlayNetworking.registerGlobalReceiver(CHANNEL_WECUI, this::onReceive);
     }
 
     public void onWorldChange() {

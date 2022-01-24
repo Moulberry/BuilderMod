@@ -1,12 +1,13 @@
 package codes.moulberry.mixin;
 
 import codes.moulberry.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -20,6 +21,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -183,6 +185,12 @@ public abstract class MixinMinecraftClient {
         if(oldStack != null) {
             getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, oldStack));
         }
+    }
+
+    @Redirect(method = "doItemPick", at=@At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPickStack(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/item/ItemStack;"))
+    public ItemStack onPickBlock(Block instance, BlockView world, BlockPos pos, BlockState state) {
+        ItemStack stack = CustomBlocks.getCustomBlock(state);
+        return stack.isEmpty() ? instance.getPickStack(world, pos, state) : stack;
     }
 
 }
