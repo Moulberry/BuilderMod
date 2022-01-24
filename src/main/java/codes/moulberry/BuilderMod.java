@@ -6,6 +6,7 @@ import codes.moulberry.config.BMConfig;
 import codes.moulberry.config.serialize.GSONHolder;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.option.KeyBinding;
@@ -29,15 +30,20 @@ public class BuilderMod implements ModInitializer {
 
 	public KeyBinding clearLaserKeybind = new KeyBinding("buildermod.clearlaser", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_DELETE, "BuilderMod");
 
+	public static KeyBinding replaceModeKeyBind;
+
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
 
 		ClientPlayConnectionEvents.JOIN.register(WorldEditCUI.getInstance()::onPlayReady);
+		StateManager.setupPackets();
 
 		configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), "buildermod/config.json");
 		configFile.getParentFile().mkdirs();
 		loadConfig();
+
+		replaceModeKeyBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("buildermod.replace", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "BuilderMod"));
 	}
 
 	public void loadConfig() {

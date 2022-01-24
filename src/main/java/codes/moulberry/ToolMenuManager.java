@@ -1,7 +1,5 @@
 package codes.moulberry;
 
-import net.java.games.input.Component;
-import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Item;

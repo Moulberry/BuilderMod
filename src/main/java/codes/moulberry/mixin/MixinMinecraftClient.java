@@ -1,9 +1,6 @@
 package codes.moulberry.mixin;
 
-import codes.moulberry.BuilderMod;
-import codes.moulberry.LaserPointer;
-import codes.moulberry.ToolMenuManager;
-import codes.moulberry.WorldEditCUI;
+import codes.moulberry.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -33,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MinecraftClient.class)
+@Mixin(value = MinecraftClient.class, priority = 1001)
 public abstract class MixinMinecraftClient {
 
     @Shadow protected abstract void doAttack();
@@ -65,6 +62,7 @@ public abstract class MixinMinecraftClient {
             BuilderMod.getInstance().saveConfig();
         } catch(Exception ignored) { }
         WorldEditCUI.getInstance().onWorldChange();
+        StateManager.onWorldChange();
     }
 
     @Inject(method="close", at=@At("HEAD"), cancellable = true)
@@ -134,6 +132,9 @@ public abstract class MixinMinecraftClient {
         }
         if(BuilderMod.getInstance().clearLaserKeybind.isPressed()) {
             LaserPointer.getInstance().clearAll();
+        }
+        if (BuilderMod.replaceModeKeyBind.wasPressed()) {
+            player.sendChatMessage("/replacemode");
         }
     }
 
