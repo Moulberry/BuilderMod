@@ -1,22 +1,21 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "codes.moulberry.mixin",
+  "package": "codes.moulberry.buildermod.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
+  "client": [
     "MixinAbstractBlock",
-    "MixinBlockItem",
-    "MixinClientPlayerEntity",
-    "MixinClientPlayNetworkHandler",
+    "MixinBufferBuilder",
+    "MixinClientPlayerInteractionManager",
     "MixinHeldItemRenderer",
+    "MixinInGameHud",
     "MixinItemModels",
     "MixinItemStack",
     "MixinMinecraftClient",
+    "MixinMouse",
+    "MixinPlayerEntity",
     "MixinPlayerInventory",
     "MixinWorldRenderer"
-  ],
-  "client": [
-    "MixinInGameHud"
   ],
   "injectors": {
     "defaultRequire": 1

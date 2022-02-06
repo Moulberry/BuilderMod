@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "codes.moulberry.BuilderMod"
+      "codes.moulberry.buildermod.BuilderMod"
     ]
   },
   "mixins": [
