@@ -1,4 +1,4 @@
-package codes.moulberry.buildermod.render;
+package codes.moulberry.buildermod.render.regions;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.VertexBuffer;
@@ -8,9 +8,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 
-public class RegionRenderer {
+public class BooleanRegionRenderer {
 
-    public static void render(Region region, MatrixStack matrix, Matrix4f projection) {
+    public static void render(BooleanRegion region, MatrixStack matrix, Matrix4f projection) {
         VertexBuffer vertexBuffer = region.getVertexBuffer();
         if(vertexBuffer != null) {
             RenderSystem.enableBlend();
@@ -41,7 +41,7 @@ public class RegionRenderer {
     private static final float XF = 0.8f;
     private static final float YF = 1f;
     private static final float ZF = 0.9f;
-    public static void uploadRegion(Region region, BufferBuilder bufferBuilder) {
+    public static void uploadRegion(BooleanRegion region, BufferBuilder bufferBuilder) {
         float d = 1f;
         for (Vec3f face : region.xFaces.values()) {
             bufferBuilder.vertex(face.getX(), face.getY(), face.getZ()+d).color(XF, XF, XF, 1f).next();

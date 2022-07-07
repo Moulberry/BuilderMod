@@ -25,6 +25,8 @@ public abstract class MixinAbstractBlock {
 
     @Shadow protected abstract BlockState asBlockState();
 
+    @Shadow public abstract VoxelShape getOutlineShape(BlockView world, BlockPos pos, ShapeContext context);
+
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"), cancellable = true)
     private void onNeighborUpdate(Direction direction, BlockState neighborState, WorldAccess world,
                                   BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
@@ -33,13 +35,27 @@ public abstract class MixinAbstractBlock {
         }
     }
 
+    private static boolean OVERRIDE_SHAPE = true;
+
     private static final VoxelShape SHAPE = Block.createCuboidShape(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
     @Inject(method = "getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;",
             at = @At("RETURN"), cancellable = true)
     private void getOutlineShape(BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+        if (!OVERRIDE_SHAPE) return;
+
         if (CustomBlocks.getCustomBlock(this.asBlockState()) != ItemStack.EMPTY &&
                 cir.getReturnValue() != VoxelShapes.fullCube()) {
             cir.setReturnValue(SHAPE);
+        }
+    }
+
+    @Inject(method="getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;",
+            at = @At("RETURN"), cancellable = true)
+    private void getCollisionShape(BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+        if (cir.getReturnValue() == SHAPE) {
+            OVERRIDE_SHAPE = false;
+            cir.setReturnValue(this.getOutlineShape(world, pos, context));
+            OVERRIDE_SHAPE = true;
         }
     }
 

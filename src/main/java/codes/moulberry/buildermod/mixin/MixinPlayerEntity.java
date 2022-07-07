@@ -3,6 +3,7 @@ package codes.moulberry.buildermod.mixin;
 import codes.moulberry.buildermod.Capabilities;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -24,17 +25,17 @@ public abstract class MixinPlayerEntity extends LivingEntity {
     @Inject(method="travel", at=@At(value = "HEAD"), cancellable = true)
     public void travel(Vec3d movementInput, CallbackInfo ci) {
         if (Capabilities.ENHANCED_FLIGHT.isEnabled() && (Object)this instanceof ClientPlayerEntity player) {
-            if (player.getAbilities().flying && !player.hasVehicle()) {
+            if (player.getAbilities().flying && !player.hasVehicle() && !this.getFlag(Entity.FALL_FLYING_FLAG_INDEX)) {
                 double sin = -Math.sin(Math.toRadians(player.getPitch()));
                 double cos = Math.cos(Math.toRadians(player.getPitch()));
 
-                float sprintMult = MinecraftClient.getInstance().options.keySprint.isPressed() ? 2.5f : 1f;
+                float sprintMult = MinecraftClient.getInstance().options.sprintKey.isPressed() ? 2.5f : 1f;
 
                 float movementY = 0;
-                if (MinecraftClient.getInstance().options.keySneak.isPressed()) {
+                if (MinecraftClient.getInstance().options.sneakKey.isPressed()) {
                     movementY -= sprintMult;
                 }
-                if (MinecraftClient.getInstance().options.keyJump.isPressed()) {
+                if (MinecraftClient.getInstance().options.jumpKey.isPressed()) {
                     movementY += sprintMult;
                 }
 

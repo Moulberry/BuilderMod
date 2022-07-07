@@ -1,30 +1,22 @@
 package codes.moulberry.buildermod.customtool;
 
-import codes.moulberry.buildermod.BuilderMod;
-import codes.moulberry.buildermod.gui.SmoothToolConfigureMenu;
-import codes.moulberry.buildermod.render.Region;
-import codes.moulberry.buildermod.render.RegionRenderer;
+import codes.moulberry.buildermod.render.regions.BooleanRegion;
+import codes.moulberry.buildermod.render.regions.BooleanRegionRenderer;
 import codes.moulberry.buildermod.render.SphereRenderer;
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 
 public abstract class GenericTool implements CustomTool {
 
-    private static final Region TOOL_REGION = new Region();
+    private static final BooleanRegion TOOL_REGION = new BooleanRegion();
     private static final int SELECTION_LIMIT = 100000;
 
     protected abstract int toolRadius();
     protected abstract boolean isSelectable(BlockState blockState);
-    protected abstract void apply(Region region);
+    protected abstract void apply(BooleanRegion region);
 
     @Override
     public void onSelect() {
@@ -50,7 +42,7 @@ public abstract class GenericTool implements CustomTool {
             return;
         }
 
-        if (MinecraftClient.getInstance().options.keyUse.isPressed()) {
+        if (MinecraftClient.getInstance().options.useKey.isPressed()) {
             if (TOOL_REGION.totalCubes() < SELECTION_LIMIT) {
                 CustomTool.raycastBlock((blockHitResult -> {
                     BlockPos pos = blockHitResult.getBlockPos();
@@ -63,7 +55,7 @@ public abstract class GenericTool implements CustomTool {
                                     BlockPos newPos = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
 
                                     if (isSelectable(MinecraftClient.getInstance().world.getBlockState(newPos))) {
-                                        TOOL_REGION.addBox(newPos);
+                                        TOOL_REGION.add(newPos);
                                     }
                                 }
                             }
@@ -71,7 +63,7 @@ public abstract class GenericTool implements CustomTool {
                     }
                 }));
             }
-            RegionRenderer.render(TOOL_REGION, matrices, projection);
+            BooleanRegionRenderer.render(TOOL_REGION, matrices, projection);
         } else if (TOOL_REGION.totalCubes() > 0) {
             apply(TOOL_REGION);
             TOOL_REGION.clear();
@@ -81,6 +73,5 @@ public abstract class GenericTool implements CustomTool {
                 SphereRenderer.render(matrices, projection, pos, toolRadius());
             }));
         }
-
     }
 }

@@ -1,9 +1,13 @@
 package codes.moulberry.buildermod;
 
+import codes.moulberry.buildermod.blueprint.BlueprintLibrary;
+import codes.moulberry.buildermod.commands.BlueprintCommand;
 import codes.moulberry.buildermod.commands.BuildModeCommand;
+import codes.moulberry.buildermod.commands.CreateToolCommand;
 import codes.moulberry.buildermod.commands.ToolMenuCommand;
 import codes.moulberry.buildermod.config.BMConfig;
 import codes.moulberry.buildermod.config.serialize.GSONHolder;
+import codes.moulberry.buildermod.gui.blueprints.BlueprintLibraryMenu;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
@@ -28,6 +32,7 @@ public class BuilderMod implements ModInitializer {
 
 	public BMConfig config = null;
 	private File configFile;
+	private File blueprintsFolder;
 
 	public KeyBinding clearLaserKeybind;
 	public KeyBinding replaceModeKeyBind;
@@ -46,8 +51,14 @@ public class BuilderMod implements ModInitializer {
 		WorldEditCUI.getInstance().setupPackets();
 		CustomBlocks.setupPackets();
 
-		configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), "buildermod/config.json");
-		configFile.getParentFile().mkdirs();
+		File configDir = FabricLoader.getInstance().getConfigDir().toFile();
+
+		blueprintsFolder = new File(configDir, "buildermod/blueprints");
+		blueprintsFolder.mkdirs();
+
+		BlueprintLibrary.loadBlueprints(blueprintsFolder);
+
+		configFile = new File(configDir, "buildermod/config.json");
 		loadConfig();
 
 		clearLaserKeybind = new KeyBinding("buildermod.clearlaser", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_DELETE, "BuilderMod");
@@ -55,8 +66,14 @@ public class BuilderMod implements ModInitializer {
 		wheelKeyBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("buildermod.wheel",
 				InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "BuilderMod"));
 
+		CreateToolCommand.register(ClientCommandManager.DISPATCHER);
 		ToolMenuCommand.register(ClientCommandManager.DISPATCHER);
 		BuildModeCommand.register(ClientCommandManager.DISPATCHER);
+		BlueprintCommand.register(ClientCommandManager.DISPATCHER);
+	}
+
+	public File getBlueprintsFolder() {
+		return blueprintsFolder;
 	}
 
 	public void loadConfig() {

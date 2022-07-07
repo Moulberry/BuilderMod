@@ -66,7 +66,7 @@ public class ToolMenuManager {
             selectedStack = new ItemStack(Item.byRawId(BuilderMod.getInstance().config.quickTools.get(toolSlotSelected)));
             MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
 
-            //changeStack();
+            changeStack();
 
             return 0;
         }
@@ -75,23 +75,23 @@ public class ToolMenuManager {
             isOverridingSlot = true;
             MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
             CustomToolManager.acceptTool(getStack().getItem(), CustomTool::onSelect);
-            //changeStack();
+            changeStack();
             return 0;
         } else if(resultantSlot == 1 && direction == -1 && isOverridingSlot) {
             isOverridingSlot = false;
             MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
-            //resetStack();
+            resetStack();
             return 0;
         } else if(resultantSlot == 8 && direction == 1 && isOverridingSlot) {
             isOverridingSlot = false;
             MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
-            //resetStack();
+            resetStack();
             return 8;
         } else if(resultantSlot == 8 && direction == 1 && !isOverridingSlot) {
             isOverridingSlot = true;
             MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
             CustomToolManager.acceptTool(getStack().getItem(), CustomTool::onSelect);
-            //changeStack();
+            changeStack();
             return 0;
         }
         return resultantSlot;

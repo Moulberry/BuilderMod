@@ -3,6 +3,8 @@ package codes.moulberry.buildermod.mixin;
 import codes.moulberry.buildermod.*;
 import codes.moulberry.buildermod.customtool.CustomTool;
 import codes.moulberry.buildermod.customtool.CustomToolManager;
+import codes.moulberry.buildermod.macrotool.ToolAction;
+import codes.moulberry.buildermod.macrotool.ToolHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -39,7 +41,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = MinecraftClient.class, priority = 1001)
 public abstract class MixinMinecraftClient {
 
-    @Shadow protected abstract void doAttack();
+    @Shadow protected abstract boolean doAttack();
     @Shadow @Nullable public ClientPlayerInteractionManager interactionManager;
     @Shadow @Nullable public ClientPlayerEntity player;
     @Shadow @Nullable public abstract ClientPlayNetworkHandler getNetworkHandler();
@@ -104,6 +106,8 @@ public abstract class MixinMinecraftClient {
         Entity entity = getCameraEntity();
         if (!breaking) {
             if (instabreakTimer < 15) instabreakTimer++;
+        } else if (ToolHandler.handleAction((MinecraftClient)(Object)this, ToolAction.LEFT_CLICK_CONTINUOUS)) {
+            ci.cancel();
         } else if (Capabilities.INSTABREAK.isEnabled() && this.crosshairTarget != null &&
                 this.crosshairTarget.getType() == HitResult.Type.BLOCK &&
                 interactionManager != null && entity != null) {
@@ -128,30 +132,26 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method="handleInputEvents", at=@At(
             value="INVOKE",
-            target = "Lnet/minecraft/client/MinecraftClient;doAttack()V"
+            target = "Lnet/minecraft/client/MinecraftClient;doAttack()Z"
     ))
-    public void onDoAttack(MinecraftClient client) {
+    public boolean onDoAttack(MinecraftClient client) {
         boolean override = ToolMenuManager.getInstance().isOverriding() && interactionManager.getCurrentGameMode() == GameMode.CREATIVE;
+
+        if (ToolHandler.handleAction((MinecraftClient)(Object)this, ToolAction.LEFT_CLICK)) {
+            return false;
+        }
 
         if(override && CustomToolManager.acceptTool(ToolMenuManager.getInstance().getStack().getItem(), CustomTool::leftClick)) {
             MinecraftClient.getInstance().player.swingHand(Hand.MAIN_HAND);
-            return;
+            return false;
         }
 
-        ItemStack oldStack = null;
-        if(override) {
-            oldStack = player.getInventory().main.get(0);
-            getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, ToolMenuManager.getInstance().getStack()));
-        }
-        doAttack();
-        if(oldStack != null) {
-            getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, oldStack));
-        }
+        return doAttack();
     }
 
     @Inject(method="tick", at=@At("HEAD"))
     public void onTick(CallbackInfo ci) {
-        if(!MinecraftClient.getInstance().options.keyUse.isPressed()) {
+        if(!MinecraftClient.getInstance().options.useKey.isPressed()) {
             LaserPointer.getInstance().endChain();
         }
         if(BuilderMod.getInstance().clearLaserKeybind.isPressed()) {
@@ -184,32 +184,17 @@ public abstract class MixinMinecraftClient {
     public void onDoItemUse(MinecraftClient client) {
         boolean override = ToolMenuManager.getInstance().isOverriding() && interactionManager.getCurrentGameMode() == GameMode.CREATIVE;
 
+        if (ToolHandler.handleAction((MinecraftClient)(Object)this, ToolAction.RIGHT_CLICK)) {
+            itemUseCooldown = 4;
+            return;
+        }
+
         if (override && CustomToolManager.acceptTool(ToolMenuManager.getInstance().getStack().getItem(), CustomTool::rightClick)) {
             itemUseCooldown = 4;
             return;
         }
 
-        ItemStack oldStack = null;
-        if(override) {
-            oldStack = player.getInventory().main.get(0);
-            getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, ToolMenuManager.getInstance().getStack()));
-        }
-        if(override && oldStack.isEmpty()) {
-            itemUseCooldown = 4;
-            ActionResult actionResult3 = this.interactionManager.interactItem(this.player, world, Hand.MAIN_HAND);
-            if (actionResult3.isAccepted()) {
-                if (actionResult3.shouldSwingHand()) {
-                    this.player.swingHand(Hand.MAIN_HAND);
-                }
-                gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
-                return;
-            }
-        } else {
-            doItemUse();
-        }
-        if(oldStack != null) {
-            getNetworkHandler().sendPacket(new CreativeInventoryActionC2SPacket(36, oldStack));
-        }
+        doItemUse();
     }
 
     @Redirect(method = "doItemPick", at=@At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPickStack(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/item/ItemStack;"))
