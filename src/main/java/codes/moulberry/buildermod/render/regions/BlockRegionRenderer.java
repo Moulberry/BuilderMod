@@ -20,8 +20,9 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockRegionRenderer {
@@ -47,7 +48,7 @@ public class BlockRegionRenderer {
             TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
             textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, true);
             RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-            vertexBuffer.setShader(matrix.peek().getPositionMatrix(), projection, shader);
+            vertexBuffer.draw(matrix.peek().getPositionMatrix(), projection, shader);
 
             matrix.pop();
 
@@ -63,7 +64,7 @@ public class BlockRegionRenderer {
     public static void uploadRegion(BlockRegion region, BufferBuilder bufferBuilder) {
         BlockRenderManager renderManager = MinecraftClient.getInstance().getBlockRenderManager();
 
-        Random rand = new Random();
+        Random rand = new LocalRandom(System.nanoTime());
 
         MatrixStack matrices = new MatrixStack();
 

@@ -17,7 +17,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.Objects;
@@ -25,7 +24,7 @@ import java.util.Objects;
 public class ToolCreateMenu extends LightweightGuiDescription {
 
     public static void open() {
-        Text menuName = new LiteralText("Create Tool");
+        Text menuName = Text.literal("Create Tool");
         ToolCreateMenu menu = new ToolCreateMenu();
         MinecraftClient.getInstance().setScreen(new CottonClientScreen(menuName, menu) {
             @Override

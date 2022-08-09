@@ -73,8 +73,7 @@ public class WorldRendererHook {
                         bufferBuilder.vertex(matrix, (float)pos.x, (float)pos.y, (float)pos.z).next();
                     }
 
-                    bufferBuilder.end();
-                    BufferRenderer.draw(bufferBuilder);
+                    BufferRenderer.drawWithShader(bufferBuilder.end());
                 }
             }
         }
@@ -122,8 +121,7 @@ public class WorldRendererHook {
             bufferBuilder.vertex(matrix, (float)pos.x - 0.5f*c, (float)pos.y - 0.5f*s, (float)pos.z - 0.5f).texture(0, 0).next();
         }
 
-        bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+        BufferRenderer.drawWithShader(bufferBuilder.end());
     }
 
 }

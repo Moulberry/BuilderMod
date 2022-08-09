@@ -1,6 +1,7 @@
 package codes.moulberry.buildermod.mixin;
 
 import codes.moulberry.buildermod.*;
+import codes.moulberry.buildermod.commands.CommandKeyCommand;
 import codes.moulberry.buildermod.customtool.CustomTool;
 import codes.moulberry.buildermod.customtool.CustomToolManager;
 import codes.moulberry.buildermod.macrotool.ToolAction;
@@ -21,8 +22,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.CreativeInventoryActionC2SPacket;
+import net.minecraft.state.property.Property;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -55,10 +60,6 @@ public abstract class MixinMinecraftClient {
     @Shadow private int itemUseCooldown;
 
     @Shadow public @Nullable abstract Entity getCameraEntity();
-
-    @Shadow protected int attackCooldown;
-
-    @Shadow @Final private HeldItemRenderer heldItemRenderer;
 
     @Shadow @Final public Mouse mouse;
 
@@ -158,7 +159,7 @@ public abstract class MixinMinecraftClient {
             LaserPointer.getInstance().clearAll();
         }
         if (BuilderMod.getInstance().replaceModeKeyBind.wasPressed()) {
-            player.sendChatMessage("/buildmode replace");
+            player.sendCommand("buildmode replace");
         }
         if (BuilderMod.getInstance().wheelKeyBind.wasPressed()) {
             if (this.currentScreen == null) {
@@ -168,6 +169,13 @@ public abstract class MixinMinecraftClient {
         if (!BuilderMod.getInstance().wheelKeyBind.isPressed() && WheelGUI.isWheelOpen()) {
             WheelGUI.closeWheel();
             mouse.lockCursor();
+        }
+        if (BuilderMod.getInstance().commandKeyBind.wasPressed() && this.player != null) {
+            if (CommandKeyCommand.command == null) {
+                this.player.sendMessage(Text.literal("No Command Set, do /setcommandkey <command>").formatted(Formatting.RED));
+            } else {
+                this.player.sendCommand(CommandKeyCommand.command);
+            }
         }
         WheelGUI.tick((MinecraftClient) (Object) this);
     }
@@ -199,6 +207,17 @@ public abstract class MixinMinecraftClient {
 
     @Redirect(method = "doItemPick", at=@At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPickStack(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/item/ItemStack;"))
     public ItemStack onPickBlock(Block instance, BlockView world, BlockPos pos, BlockState state) {
+        if (Screen.hasControlDown() && Screen.hasShiftDown()) {
+            ItemStack stack = instance.getPickStack(world, pos, state);
+            NbtCompound tag = new NbtCompound();
+            for (Property<?> property : state.getProperties()) {
+                tag.putString(property.getName(), state.get(property).toString());
+            }
+            NbtCompound outTag = new NbtCompound();
+            outTag.put("BlockStateTag", tag);
+            stack.setNbt(outTag);
+            return stack;
+        }
         ItemStack stack = CustomBlocks.getCustomBlock(state);
         return stack.isEmpty() ? instance.getPickStack(world, pos, state) : stack;
     }

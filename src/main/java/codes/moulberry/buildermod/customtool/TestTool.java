@@ -464,8 +464,7 @@ public class TestTool implements CustomTool  {
                 bufferBuilder.vertex(matrix4f, (float)base.x+z, (float)base.y+x, (float)base.z).color(red, green, blue, 1).next();
             }
         }
-        bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+        BufferRenderer.drawWithShader(bufferBuilder.end());
     }
 
     private void drawBox(BufferBuilder bufferBuilder, Matrix4f matrix4f, float boxSize, int boxColour) {
@@ -521,8 +520,7 @@ public class TestTool implements CustomTool  {
         bufferBuilder.vertex(matrix4f, boxSize, boxSize, boxSize).color(red*YF, green*YF, blue*YF, alpha).next();
         bufferBuilder.vertex(matrix4f, boxSize, boxSize, boxSize).color(red*YF, green*YF, blue*YF, alpha).next();
 
-        bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+        BufferRenderer.drawWithShader(bufferBuilder.end());
     }
 
 }

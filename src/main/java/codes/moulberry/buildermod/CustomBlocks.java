@@ -15,6 +15,7 @@ import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.registry.Registry;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -54,13 +55,13 @@ public class CustomBlocks {
                 .forEach(CustomBlockEntry::addToMaps);
     }
 
-    static record CustomBlockEntry(String key, ItemStack blockItem, List<String> blockStates) {
+    record CustomBlockEntry(String key, ItemStack blockItem, List<String> blockStates) {
 
         public static void addToMaps(CustomBlockEntry entry) {
             CUSTOM_BLOCKS.add(entry.blockItem);
             for (String blockState : entry.blockStates()) {
                 try {
-                    BlockState state = (new BlockArgumentParser(new StringReader(blockState), false)).parse(false).getBlockState();
+                    BlockState state = BlockArgumentParser.block(Registry.BLOCK, blockState, false).blockState();
                     STATES_TO_ITEMS.put(state, entry.blockItem);
                 }catch (Exception ignored) {}
             }

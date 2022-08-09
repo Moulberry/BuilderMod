@@ -58,16 +58,16 @@ public class BlueprintCreateMenu extends LightweightGuiDescription {
                 settings.add(new WWidget(), 0, -3);
 
                 // Name
-                settings.add(new WLabel("Name: "), 0, 8);
+                settings.add(new WLabel(Text.literal("Name: ")), 0, 8);
                 nameField = new WIdentifierField("minecraft", "minecraft:tree");
                 settings.add(nameField, 142, 20);
 
                 // Author
-                settings.add(new WLabel("Author: "), 0, 8);
+                settings.add(new WLabel(Text.literal("Author: ")), 0, 8);
                 authorField = new WTextField(Text.of(defaultAuthor)).setSuggestionColor(0xEEEEEE);
                 settings.add(authorField, 142, 20);
 
-                settings.add(new WLabel("Pivot: "), 0, 8);
+                settings.add(new WLabel(Text.literal("Pivot: ")), 0, 8);
 
                 { // Pivot settings
                     WBox pivotSettings = new WBox(Axis.HORIZONTAL);
@@ -78,7 +78,7 @@ public class BlueprintCreateMenu extends LightweightGuiDescription {
                 }
 
                 // Tags
-                settings.add(new WLabel("Tags: "), 0, 8);
+                settings.add(new WLabel(Text.literal("Tags: ")), 0, 8);
                 tagsField = new WTagsField("tree,spruce,big");
                 settings.add(tagsField, 142, 20);
             }

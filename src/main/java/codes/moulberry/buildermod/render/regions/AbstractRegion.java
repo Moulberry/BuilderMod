@@ -76,9 +76,8 @@ public abstract class AbstractRegion implements Closeable {
         }
 
         bufferBuilderState = bufferBuilder.popState();
-        bufferBuilder.end();
 
-        vertexBuffer.upload(bufferBuilder);
+        vertexBuffer.upload(bufferBuilder.end());
         return vertexBuffer;
     }
 
@@ -105,9 +104,8 @@ public abstract class AbstractRegion implements Closeable {
         bufferBuilder.restoreState(bufferBuilderState);
         bufferBuilder.sortFrom(x, y, z);
         bufferBuilderState = bufferBuilder.popState();
-        bufferBuilder.end();
 
-        vertexBuffer.submitUpload(bufferBuilder);
+        vertexBuffer.upload(bufferBuilder.end());
     }
 
     private void tryAutomaticResort() {

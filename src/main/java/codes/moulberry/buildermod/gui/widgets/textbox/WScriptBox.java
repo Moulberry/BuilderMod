@@ -51,7 +51,7 @@ public class WScriptBox extends WTextBox implements DocumentListener {
         renderedText.clear();
 
         String rawText = this.textComponent.getText();
-        MutableText formattedText = LiteralText.EMPTY.copy();
+        MutableText formattedText = Text.empty();
 
         Lexer lexer = new Lexer(rawText);
         Token token;
@@ -59,7 +59,7 @@ public class WScriptBox extends WTextBox implements DocumentListener {
         while ((token = lexer.next()) != null) {
             if (token.start > lastIndex) {
                 String before = rawText.substring(lastIndex, token.start);
-                formattedText.append(new LiteralText(before).setStyle(COMMENT_STYLE));
+                formattedText.append(Text.literal(before).setStyle(COMMENT_STYLE));
             }
             lastIndex = token.end;
 
@@ -82,11 +82,11 @@ public class WScriptBox extends WTextBox implements DocumentListener {
             } else {
                 style = ERROR_STYLE;
             }
-            formattedText.append(new LiteralText(text).setStyle(style));
+            formattedText.append(Text.literal(text).setStyle(style));
         }
         if (rawText.length() > lastIndex) {
             String before = rawText.substring(lastIndex);
-            formattedText.append(new LiteralText(before).setStyle(COMMENT_STYLE));
+            formattedText.append(Text.literal(before).setStyle(COMMENT_STYLE));
         }
 
         renderedText.addAll(ChatMessages.breakRenderedChatMessageLines(

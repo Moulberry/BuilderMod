@@ -3,6 +3,7 @@ package codes.moulberry.buildermod;
 import codes.moulberry.buildermod.customtool.CustomTool;
 import codes.moulberry.buildermod.customtool.CustomToolManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,7 +65,7 @@ public class ToolMenuManager {
             if(toolSlotSelected < 0) toolSlotSelected = max;
 
             selectedStack = new ItemStack(Item.byRawId(BuilderMod.getInstance().config.quickTools.get(toolSlotSelected)));
-            MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
+            MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
 
             changeStack();
 
@@ -73,23 +74,23 @@ public class ToolMenuManager {
 
         if(resultantSlot == 0 && direction == -1 && !isOverridingSlot) {
             isOverridingSlot = true;
-            MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
+            MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
             CustomToolManager.acceptTool(getStack().getItem(), CustomTool::onSelect);
             changeStack();
             return 0;
         } else if(resultantSlot == 1 && direction == -1 && isOverridingSlot) {
             isOverridingSlot = false;
-            MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
+            MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
             resetStack();
             return 0;
         } else if(resultantSlot == 8 && direction == 1 && isOverridingSlot) {
             isOverridingSlot = false;
-            MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
+            MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
             resetStack();
             return 8;
         } else if(resultantSlot == 8 && direction == 1 && !isOverridingSlot) {
             isOverridingSlot = true;
-            MinecraftClient.getInstance().getHeldItemRenderer().resetEquipProgress(Hand.MAIN_HAND);
+            MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.resetEquipProgress(Hand.MAIN_HAND);
             CustomToolManager.acceptTool(getStack().getItem(), CustomTool::onSelect);
             changeStack();
             return 0;

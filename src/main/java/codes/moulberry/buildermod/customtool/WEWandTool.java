@@ -15,7 +15,7 @@ public class WEWandTool implements CustomTool {
     public void leftClick() {
         CustomTool.raycastBlock((blockHitResult -> {
             BlockPos pos = blockHitResult.getBlockPos();
-            MinecraftClient.getInstance().player.sendChatMessage("//pos1 "+pos.getX()+","+pos.getY()+","+pos.getZ());
+            MinecraftClient.getInstance().player.sendCommand("/pos1 "+pos.getX()+","+pos.getY()+","+pos.getZ());
         }));
     }
 
@@ -23,7 +23,7 @@ public class WEWandTool implements CustomTool {
     public void rightClick() {
         CustomTool.raycastBlock((blockHitResult -> {
             BlockPos pos = blockHitResult.getBlockPos();
-            MinecraftClient.getInstance().player.sendChatMessage("//pos2 "+pos.getX()+","+pos.getY()+","+pos.getZ());
+            MinecraftClient.getInstance().player.sendCommand("/pos2 "+pos.getX()+","+pos.getY()+","+pos.getZ());
         }));
     }
 
@@ -91,8 +91,7 @@ public class WEWandTool implements CustomTool {
             bufferBuilder.vertex(mat, (float)box.maxX, (float)box.minY, (float)box.minZ).color(red, green, blue, alpha).next();
             bufferBuilder.vertex(mat, (float)box.minX, (float)box.maxY, (float)box.minZ).color(red, green, blue, alpha).next();
             bufferBuilder.vertex(mat, (float)box.maxX, (float)box.maxY, (float)box.minZ).color(red, green, blue, alpha).next();
-            bufferBuilder.end();
-            BufferRenderer.draw(bufferBuilder);
+            BufferRenderer.drawWithShader(bufferBuilder.end());
         }
 
         {
@@ -139,8 +138,7 @@ public class WEWandTool implements CustomTool {
                 bufferBuilder.vertex(mat, (float)box2.maxX, (float)box2.minY, (float)z).color(red, green, blue, alpha).next();
                 bufferBuilder.vertex(mat, (float)box2.maxX, (float)box2.maxY, (float)z).color(red, green, blue, alpha).next();
             }
-            bufferBuilder.end();
-            BufferRenderer.draw(bufferBuilder);
+            BufferRenderer.drawWithShader(bufferBuilder.end());
         }
 
         RenderSystem.lineWidth(3);
@@ -154,8 +152,7 @@ public class WEWandTool implements CustomTool {
 
             bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
             WorldRenderer.drawBox(matrices, bufferBuilder, box, red / 255f, green / 255f, blue / 255f, alpha / 255f);
-            bufferBuilder.end();
-            BufferRenderer.draw(bufferBuilder);
+            BufferRenderer.drawWithShader(bufferBuilder.end());
         }
 
         RenderSystem.enableDepthTest();

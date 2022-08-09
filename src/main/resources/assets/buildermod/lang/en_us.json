@@ -1,4 +1,7 @@
 {
   "itemGroup.buildermod.customblocks": "Gauntlet Blocks",
-  "buildermod.replace": "Replace Mode"
+  "itemGroup.buildermod.custom_groups.server": "Server Blocks",
+  "itemGroup.buildermod.custom_groups.server_colored": "Server Blocks",
+  "buildermod.replace": "Replace Mode",
+  "buildermod.commandkey": "Command Key"
 }

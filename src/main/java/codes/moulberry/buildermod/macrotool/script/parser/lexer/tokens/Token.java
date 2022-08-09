@@ -1,9 +1,9 @@
 package codes.moulberry.buildermod.macrotool.script.parser.lexer.tokens;
 
-import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockArgumentParser;
+import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -84,9 +84,9 @@ public abstract class Token implements norswap.autumn.positions.Token {
             type = aliasMap.get(content);
         } else {
             System.out.println("Trying to parse: " + content);
-            var parser = new BlockArgumentParser(new StringReader(content.toLowerCase(Locale.ROOT)), false);
             try {
-                BlockState block = parser.parse(false).getBlockState();
+                var parser = BlockArgumentParser.block(Registry.BLOCK, content.toLowerCase(Locale.ROOT), false);
+                BlockState block = parser.blockState();
                 if (block != null) {
                     return new BlockToken(block, input, start, end);
                 }

@@ -106,7 +106,7 @@ public class WheelGUI {
         if (client.player != null && index >= 0) {
             WheelEntry entry = currentWheel.get(index);
             if (entry.command() != null) {
-                client.player.sendChatMessage(entry.command());
+                client.player.sendCommand(entry.command().substring(1));
             } else if (entry.subwheel() != null) {
                 openWheel(entry.subwheel());
                 hoverTimeMap.clear();

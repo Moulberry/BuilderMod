@@ -21,7 +21,7 @@ public abstract class MixinBufferBuilder {
 
     @Shadow @Nullable private Vec3f[] sortingPrimitiveCenters;
 
-    @Shadow protected abstract IntConsumer createIndexWriter(VertexFormat.IntType elementFormat);
+    @Shadow protected abstract IntConsumer createIndexWriter(int offset, VertexFormat.IndexType indexType);
 
     @Shadow private VertexFormat.DrawMode drawMode;
 
@@ -34,7 +34,7 @@ public abstract class MixinBufferBuilder {
     @Shadow private float sortingCameraZ;
 
     @Inject(method="writeSortedIndices", at=@At("HEAD"), cancellable = true)
-    public void writeCameraOffset(VertexFormat.IntType elementFormat, CallbackInfo ci) {
+    public void writeCameraOffset(VertexFormat.IndexType elementFormat, CallbackInfo ci) {
         if ((Object)this instanceof InverseBufferBuilder) {
             ci.cancel();
             float[] fs = new float[this.sortingPrimitiveCenters.length];
@@ -47,15 +47,15 @@ public abstract class MixinBufferBuilder {
                 is[i2] = i2;
             }
             IntArrays.mergeSort(is, (i, j) -> Floats.compare(fs[i], fs[j])); // <--- swapped i/j
-            IntConsumer i3 = this.createIndexWriter(elementFormat);
+            IntConsumer i3 =  this.createIndexWriter(this.elementOffset, elementFormat);
             this.buffer.position(this.elementOffset);
             for (int j2 : is) {
-                i3.accept(j2 * this.drawMode.size + 0);
-                i3.accept(j2 * this.drawMode.size + 1);
-                i3.accept(j2 * this.drawMode.size + 2);
-                i3.accept(j2 * this.drawMode.size + 2);
-                i3.accept(j2 * this.drawMode.size + 3);
-                i3.accept(j2 * this.drawMode.size + 0);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 0);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 1);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 2);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 2);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 3);
+                i3.accept(j2 * this.drawMode.additionalVertexCount + 0);
             }
         }
     }

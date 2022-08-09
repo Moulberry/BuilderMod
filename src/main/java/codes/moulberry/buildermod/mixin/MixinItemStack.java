@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +27,7 @@ public class MixinItemStack {
         if (context.isAdvanced() && Screen.hasControlDown() && this.nbt != null) {
             var returnValue = cir.getReturnValue();
             Arrays.stream(NbtHelper.toNbtProviderString(this.nbt).split("\n"))
-                    .map(LiteralText::new).forEachOrdered(returnValue::add);
+                    .map(Text::literal).forEachOrdered(returnValue::add);
             cir.setReturnValue(returnValue);
         }
     }

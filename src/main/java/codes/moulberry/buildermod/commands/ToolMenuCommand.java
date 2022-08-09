@@ -2,11 +2,10 @@ package codes.moulberry.buildermod.commands;
 
 import codes.moulberry.buildermod.gui.GuiToolMenu;
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.command.ServerCommandSource;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ToolMenuCommand {
 
