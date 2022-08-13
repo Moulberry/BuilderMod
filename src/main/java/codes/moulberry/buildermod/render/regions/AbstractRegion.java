@@ -77,6 +77,7 @@ public abstract class AbstractRegion implements Closeable {
 
         bufferBuilderState = bufferBuilder.popState();
 
+        vertexBuffer.bind();
         vertexBuffer.upload(bufferBuilder.end());
         return vertexBuffer;
     }
@@ -105,6 +106,7 @@ public abstract class AbstractRegion implements Closeable {
         bufferBuilder.sortFrom(x, y, z);
         bufferBuilderState = bufferBuilder.popState();
 
+        vertexBuffer.bind();
         vertexBuffer.upload(bufferBuilder.end());
     }
 

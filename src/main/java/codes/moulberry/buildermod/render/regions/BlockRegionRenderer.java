@@ -48,7 +48,10 @@ public class BlockRegionRenderer {
             TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
             textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, true);
             RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+
+            vertexBuffer.bind();
             vertexBuffer.draw(matrix.peek().getPositionMatrix(), projection, shader);
+            VertexBuffer.unbind();
 
             matrix.pop();
 

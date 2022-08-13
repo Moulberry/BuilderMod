@@ -23,11 +23,17 @@ public class BooleanRegionRenderer {
             RenderSystem.setShaderColor(1.0f, 0.0f, 0.0f, 0.4f);
 
             RenderSystem.polygonOffset(0f, -1f);
+
             matrix.push();
             matrix.translate(region.centerPos.getX(), region.centerPos.getY(), region.centerPos.getZ());
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+            vertexBuffer.bind();
             vertexBuffer.draw(matrix.peek().getPositionMatrix(), projection, RenderSystem.getShader());
+            VertexBuffer.unbind();
+
             matrix.pop();
+
             RenderSystem.polygonOffset(0, 0);
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
